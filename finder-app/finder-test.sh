@@ -5,6 +5,7 @@
 set -e
 set -u
 
+
 NUMFILES=10
 WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aeld-data
@@ -18,7 +19,7 @@ then
 		echo "Using default value ${NUMFILES} for number of files to write"
 	else
 		NUMFILES=$1
-	fi	
+	fi
 else
 	NUMFILES=$1
 	WRITESTR=$2
@@ -65,9 +66,38 @@ rm -rf /tmp/aeld-data
 set +e
 echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
 if [ $? -eq 0 ]; then
-	echo "success"
-	exit 0
+	################################################################################
+	# assignment2
+
+	echo ""
+	echo ""
+
+	echo "Cleaning up previous artifacts (i.e. writer, *.o)..."
+	rm -f writer
+	rm -f *.o
+
+	echo "Compile writer application..."
+	gcc -o writer writer.c
+
+	if [ ! -f writer ]; then
+	    echo "App writer not created"
+	    echo "Exiting..."
+	    exit 1
+	fi
+
+	echo "Run writer application..."
+	todayDate=$(date)
+	./writer writerOutput.txt "writerOutput $todayDate" #filesdir searchstr
+
+	file writer > $HOME/Documents/msGithubRepo/assignments/assignment2/fileresult.txt
+
+        ###############################################################################
+
+        echo "success"
+	exit 0     # 2026-01-24; commented this out so can continue to next section.
 else
 	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
 	exit 1
 fi
+
+

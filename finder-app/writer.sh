@@ -1,11 +1,18 @@
 #!/bin/bash
 
+
+# OVERVIEW: ./writer.sh writeToFile.txt \"Add this string\"
+
+
 echo ""
+echo "FILE: writer.sh..."
+echo ""
+
 
 # Check if writefile and writestr are provided:
 if [ $# != 2 ]; then
     echo "ERROR: Two inputs are required; 'writefile' and 'writestr'."
-    echo "       Ex: ./finder-app/writer.sh writerTest/writerTest.txt 'Add this string' "
+    echo "       Ex: ./writer.sh writerTest.txt \"Add this string\""
     echo "       Exiting..."
     echo ""
     exit 1
@@ -16,7 +23,7 @@ writefile="$1"
 writestr="$2"
 
 
-cd /home/$USER/Documents/msGithubRepo
+cd $HOME/Documents/msGithubRepo/finder-app/
 
 
 echo "writefile: $writefile"

@@ -1,13 +1,18 @@
 #!/bin/bash
 
 
+# OVERVIEW: ./finder.sh . [searchstr]
+
+
+echo ""
+echo "FILE: finder.sh..."
 echo ""
 
 
 # Check if filesdir and searchstr are provided:
 if [ $# != 2 ]; then
-    echo "ERROR: Two inputs are required; 'filesdir' and 'searchstr'."
-    echo "       Ex: ./finder-app/finder.sh finder-app bash"
+    echo "ERROR: Two inputs are required; \"filesdir\" and \"searchstr\"."
+    echo "       Ex: ./finder.sh . bash"
     echo "       Exiting..."
     echo ""
     exit 1
@@ -18,7 +23,7 @@ filesdir="$1"
 searchstr="$2"
 
 
-cd /home/$USER/Documents/msGithubRepo
+cd $HOME/Documents/msGithubRepo/finder-app/
 
 
 echo "filesdir : $filesdir"
@@ -57,6 +62,3 @@ echo ""
 # Print summary of results:
 echo "The number of files are $numOfFiles and the number of matching lines are $numOfLines."
 echo ""
-
-
-

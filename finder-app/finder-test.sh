@@ -67,29 +67,30 @@ set +e
 echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
 if [ $? -eq 0 ]; then
 	################################################################################
-	# assignment2
+	# assignment2, added
+        # assignment3-1, removing to move to different file
 
-	echo ""
-	echo ""
+	# echo ""
+	# echo ""
 
-	echo "Cleaning up previous artifacts (i.e. writer, *.o)..."
-	rm -f writer
-	rm -f *.o
+	# echo "Cleaning up previous artifacts (i.e. writer, *.o)..."
+	# rm -f writer
+	# rm -f *.o
 
-	echo "Compile writer application..."
-	gcc -o writer writer.c
+	# echo "Compile writer application..."
+	# gcc -o writer writer.c
 
-	if [ ! -f writer ]; then
-	    echo "App writer not created"
-	    echo "Exiting..."
-	    exit 1
-	fi
+	# if [ ! -f writer ]; then
+	#     echo "App writer not created"
+	#     echo "Exiting..."
+	#     exit 1
+	# fi
 
-	echo "Run writer application..."
-	todayDate=$(date)
-	./writer writerOutput.txt "writerOutput $todayDate" #filesdir searchstr
+	# echo "Run writer application..."
+	# todayDate=$(date)
+	# ./writer writerOutput.txt "writerOutput $todayDate" #filesdir searchstr
 
-	file writer > $HOME/Documents/msGithubRepo/assignments/assignment2/fileresult.txt
+	# file writer > $HOME/Documents/msGithubRepo/assignments/assignment2/fileresult.txt
 
         ###############################################################################
 
@@ -99,5 +100,6 @@ else
 	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
 	exit 1
 fi
+
 
 

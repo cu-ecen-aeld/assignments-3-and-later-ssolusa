@@ -1,4 +1,14 @@
 #include "systemcalls.h"
+#include <stdio.h>          // ssolusa;
+#include <stdlib.h>         // ssolusa; for system()
+#include <stdbool.h>        // ssolusa;
+#include <unistd.h>         // ssolusa; for fork(), exec()
+#include <fcntl.h>          // ssolusa; for open()
+#include <errno.h>          // ssolusa; for errors
+#include <sys/wait.h>       // ssolusa; for waitpid()
+#include <stdarg.h>         // ssolusa; for va_list
+
+
 
 /**
  * @param cmd the command to execute with system()
@@ -9,16 +19,34 @@
 */
 bool do_system(const char *cmd)
 {
-
-/*
- * TODO  add your code here
- *  Call the system() function with the command set in the cmd
- *   and return a boolean true if the system() call completed with success
- *   or false() if it returned a failure
-*/
-
+    /*
+     * TODO  add your code here
+     *  Call the system() function with the command set in the cmd
+     *   and return a boolean true if the system() call completed with success
+     *   or false() if it returned a failure
+    */
+    // ssolusa START
+    printf("\n***********************************************\n");
+    printf("systemcalls.c...do_system()...\n");
+    int returnVal = system(cmd);
+    if (returnVal == 0) {
+        printf("system() completed successfully.\n");
+        printf("END\n");
+        return true;
+    } else {
+        printf("ERROR: system() failed.\n");
+        printf("       returnVal = %d\n", returnVal);
+        printf("       Child process could not be created, or...\n");
+        printf("       its status could not be retrieved.\n");
+        printf("       errno set to indicate error.\n");
+        printf("END\n\n");
+        return false;
+    }
+    // ssolusa END
     return true;
 }
+
+
 
 /**
 * @param count -The numbers of variables passed to the function. The variables are command to execute.
@@ -33,7 +61,6 @@ bool do_system(const char *cmd)
 *   fork, waitpid, or execv() command, or if a non-zero return value was returned
 *   by the command issued in @param arguments with the specified arguments.
 */
-
 bool do_exec(int count, ...)
 {
     va_list args;
@@ -45,24 +72,56 @@ bool do_exec(int count, ...)
         command[i] = va_arg(args, char *);
     }
     command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
-
-/*
- * TODO:
- *   Execute a system command by calling fork, execv(),
- *   and wait instead of system (see LSP page 161).
- *   Use the command[0] as the full path to the command to execute
- *   (first argument to execv), and use the remaining arguments
- *   as second argument to the execv() command.
- *
-*/
-
+    // command[count] = command[count];  // this line is to avoid a compile warning before your implementation is complete and may be removed
     va_end(args);
-
+    /*
+     * TODO:
+     *   Execute a system command by calling fork, execv(),
+     *   and wait instead of system (see LSP page 161).
+     *   Use the command[0] as the full path to the command to execute
+     *   (first argument to execv), and use the remaining arguments
+     *   as second argument to the execv() command.
+     *
+    */
+    // ssolusa START
+    printf("\n***********************************************\n");
+    printf("systemcalls.c...do_exec()...\n");
+    pid_t pid = fork();
+    if (pid == -1) {
+        printf("ERROR: fork() failed.\n");
+        printf("       pid = %d\n", (int)pid);
+        printf("       No child process is created.\n");
+        printf("       errno = %d\n", errno);
+        printf("END\n\n");
+        return false;
+    }
+    if (pid == 0) {
+        printf("fork() completed successfully...continuing...\n");
+        execv(command[0], command);    // returns value if fails
+        printf("ERROR: execv() failed.\n");
+        printf("       errno = %d\n", errno);
+        printf("END\n\n");
+        _exit(EXIT_FAILURE); //return false;
+    }
+    if (pid > 0) {
+        int status;
+        pid_t waitpidReturn = waitpid(pid, &status, 0);
+        if (waitpidReturn == pid) {
+            printf("waitpid() completed successfully.\n");
+            return WIFEXITED(status) && (WEXITSTATUS(status) == 0);
+        } else {
+            printf("ERROR: waitpid() failed.\n");
+            printf("       waitpidReturn = %d\n", (int)waitpidReturn);
+            printf("       errno = %d\n", errno);
+            printf("END\n\n");
+            return false;
+        }
+    }
+    // ssolusa END
     return true;
 }
+
+
 
 /**
 * @param outputfile - The full path to the file to write with command output.
@@ -80,20 +139,56 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
         command[i] = va_arg(args, char *);
     }
     command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
-
-
-/*
- * TODO
- *   Call execv, but first using https://stackoverflow.com/a/13784315/1446624 as a refernce,
- *   redirect standard out to a file specified by outputfile.
- *   The rest of the behaviour is same as do_exec()
- *
-*/
-
+    // command[count] = command[count];   // this line is to avoid a compile warning before your implementation is complete and may be removed
     va_end(args);
-
+    /*
+     * TODO
+     *   Call execv, but first using https://stackoverflow.com/a/13784315/1446624 as a refernce,
+     *   redirect standard out to a file specified by outputfile.
+     *   The rest of the behaviour is same as do_exec()
+     *
+    */
+    // ssolusa START
+    printf("\n***********************************************\n");
+    printf("systemcalls.c...do_exec_redirect()...\n");
+    pid_t pid = fork();
+    if (pid == -1) {
+        printf("ERROR: fork() failed.\n");
+        printf("       pid = %d\n", (int)pid);
+        printf("       No child process is created.\n");
+        printf("       errno = %d\n", errno);
+        printf("END\n\n");
+        return false;
+    }
+    if (pid == 0) {
+        int fd = open(outputfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1) {
+            _exit(EXIT_FAILURE); // abort();
+        }
+        int dupTwoReturn = dup2(fd, STDOUT_FILENO);
+        if (dupTwoReturn == -1) {
+            close(fd);
+            _exit(EXIT_FAILURE); // abort();
+        }
+        close(fd);
+        execv(command[0], command);    // returns value if fails
+        _exit(EXIT_FAILURE); // abort();
+    }
+    if (pid > 0) {
+        int status;
+        pid_t waitpidReturn = waitpid(pid, &status, 0);
+        if (waitpidReturn == pid) {
+            printf("waitpid() completed successfully.\n");
+            printf("END\n\n");
+            return WIFEXITED(status) && (WEXITSTATUS(status) == 0);
+        } else {
+            printf("ERROR: waitpid() failed.\n");
+            printf("       waitpidReturn = %d\n", (int)waitpidReturn);
+            printf("       errno = %d\n", errno);
+            printf("END\n\n");
+            return false;
+        }
+    }
+    // ssolusa END
     return true;
 }

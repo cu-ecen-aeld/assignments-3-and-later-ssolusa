@@ -33,7 +33,7 @@ echo "Writing ${NUMFILES} files containing string ${WRITESTR} to ${WRITEDIR}"
 rm -rf "${WRITEDIR}"
 
 # create $WRITEDIR if not assignment1
-assignment=`cat ../conf/assignment.txt`
+assignment=`cat conf/assignment.txt`                                                               # ssolusa; per HW instruction 1.f.i; FROM ../conf/assignment.txt; TO conf/assignment.txt
 
 if [ $assignment != 'assignment1' ]
 then
@@ -49,6 +49,7 @@ then
 		exit 1
 	fi
 fi
+
 #echo "Removing the old writer utility and compiling as a native application"
 #make clean
 #make
@@ -66,7 +67,8 @@ rm -rf /tmp/aeld-data
 set +e
 echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
 if [ $? -eq 0 ]; then
-	################################################################################
+	# **************************************************************************************
+	# ssolusa
 	# assignment2, added
         # assignment3-1, removing to move to different file
 
@@ -92,7 +94,7 @@ if [ $? -eq 0 ]; then
 
 	# file writer > $HOME/Documents/msGithubRepo/assignments/assignment2/fileresult.txt
 
-        ###############################################################################
+        # ***************************************************************************************
 
         echo "success"
 	exit 0     # 2026-01-24; commented this out so can continue to next section.

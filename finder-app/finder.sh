@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+# ssolusa; HW 3 Part 2; above was /bin/bash
 
 
 # OVERVIEW: ./finder.sh . [searchstr]
@@ -23,7 +24,7 @@ filesdir="$1"
 searchstr="$2"
 
 
-cd $HOME/Documents/msGithubRepo/finder-app/
+# cd $HOME/Documents/msGithubRepo/finder-app/                                          # ssolusa; remove for HW 3 Part 2
 
 
 echo "filesdir : $filesdir"

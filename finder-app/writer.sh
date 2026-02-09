@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+# ssolusa; above was /bash
 
 
 # OVERVIEW: ./writer.sh writeToFile.txt \"Add this string\"
@@ -23,7 +24,7 @@ writefile="$1"
 writestr="$2"
 
 
-cd $HOME/Documents/msGithubRepo/finder-app/
+# cd $HOME/Documents/msGithubRepo/finder-app/
 
 
 echo "writefile: $writefile"

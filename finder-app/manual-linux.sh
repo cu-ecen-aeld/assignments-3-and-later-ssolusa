@@ -67,7 +67,7 @@ fi
 
 
 echo "Adding the Image in $OUTDIR"                                       # ssolusa; change FROM outdir, TO $OUTDIR
-sudo cp ${OUTDIR}/linux-stable/arch/arm64/boot/Image "$OUTDIR"           # ssolusa; added b/c errors; no Image
+cp ${OUTDIR}/linux-stable/arch/arm64/boot/Image "$OUTDIR"           # ssolusa; added b/c errors; no Image; removed sudo
 
 
 echo "Creating the staging directory for the root filesystem"
@@ -75,16 +75,16 @@ cd "$OUTDIR"
 # **************************************************************************************
 # ssolusa START
 # Adding b/c permission errors
-owner=$(stat -c '%U' "$OUTDIR")
-if [ "$owner" = "root" ]; then
-    echo "Changing ownership of $OUTDIR to $USER..."
-    sudo chown -R $USER:$USER "$OUTDIR"
-fi
+# owner=$(stat -c '%U' "$OUTDIR")
+# if [ "$owner" = "root" ]; then
+#     echo "Changing ownership of $OUTDIR to root..."
+#     sudo chown -R $USER:$USER "$OUTDIR"
+# fi
 # **************************************************************************************
 if [ -d "${OUTDIR}/rootfs" ]
 then
     echo "Deleting rootfs directory at ${OUTDIR}/rootfs and starting over"
-    sudo rm -rf "$OUTDIR/rootfs"
+    rm -rf "$OUTDIR/rootfs"                                                               # ssolusa; removed sudo b/c error with permissions
 fi
 
 
@@ -196,7 +196,8 @@ cp -a writer.sh "$OUTDIR/rootfs/home/"                                          
 # ********************************************************************************************
 # ssolusa START
 cd "$OUTDIR"
-sudo chown -R $USER:$USER "$OUTDIR"                                                              # Was root:root but errors with permissions
+sudo chown -R root:root "$OUTDIR/rootfs"
+# sudo chown -R $USER:$USER "$OUTDIR"                                                              # Was root:root but errors with permissions
 # ********************************************************************************************
 
 

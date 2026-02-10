@@ -12,6 +12,7 @@ set -e
 set -u
 
 
+FINDERAPP=$PWD                                                                                 # ssolusa
 OUTDIR=/tmp/aeld
 # KERNEL_REPO=git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git            # ssolusa; see next line
 KERNEL_REPO=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git            # ssolusa; per hw instruction 1.c.i.1
@@ -172,7 +173,8 @@ sudo mknod -m 666 dev/null c 1 3
 # ********************************************************************************************
 # ssolusa START
 # FROM: finder-test.sh
-cd $HOME/Documents/msGithubRepo/finder-app/
+# cd $HOME/Documents/msGithubRepo/finder-app/
+cd "$FINDERAPP"
 make clean
 make
 cp writer "$OUTDIR/rootfs/home/"                                                                 # Per HW instruction 1.e.ii
@@ -183,7 +185,8 @@ cp writer "$OUTDIR/rootfs/home/"                                                
 # TODO: Copy the finder related scripts and executables to the /home directory on the target rootfs
 # ********************************************************************************************
 # ssolusa START
-cd $HOME/Documents/msGithubRepo/finder-app/
+# cd $HOME/Documents/msGithubRepo/finder-app/
+cd "$FINDERAPP"
 cp -a finder.sh finder-test.sh "$OUTDIR/rootfs/home/"
 cp -a conf/username.txt conf/assignment.txt "$OUTDIR/rootfs/home/conf/"
 cp -a autorun-qemu.sh "$OUTDIR/rootfs/home/"

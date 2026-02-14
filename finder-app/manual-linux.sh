@@ -2,17 +2,17 @@
 # Script outline to install and build kernel.
 # Author: Siddhant Jajoo.
 
-# ********************************************
-# ssolusa
-# This file requires one argument; outdir; use below default
-# *********************************************
+# *********************************************************************
+# ssolusa; this file requires one argument; outdir; use below default
+# *********************************************************************
 
 
 set -e
 set -u
 
 
-FINDERAPP=$PWD                                                                                 # ssolusa
+FINDERAPP=$PWD                                                                                 # ssolusa; added b/c errors with Github
+
 OUTDIR=/tmp/aeld
 # KERNEL_REPO=git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git            # ssolusa; see next line
 KERNEL_REPO=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git            # ssolusa; per hw instruction 1.c.i.1
@@ -32,15 +32,10 @@ else
 fi
 
 
-# mkdir -p ${OUTDIR}                                                # ssolusa; removed, see next line
-# ****************************************************************
-# sssolusa START
-# Adding per Assignment 3, Part 2, Step 1.b.
-mkdir -p ${OUTDIR} || {
+mkdir -p ${OUTDIR} || {                                             # ssolusa; added ||... per HW 3 Part 2 Step 1b.
     echo "ERROR: Failed to create directory ${OUTDIR}" >&2
     exit 1
 }
-# ****************************************************************
 
 
 cd "$OUTDIR"
@@ -67,21 +62,12 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
 fi
 
 
-echo "Adding the Image in $OUTDIR"                                       # ssolusa; change FROM outdir, TO $OUTDIR
-cp ${OUTDIR}/linux-stable/arch/arm64/boot/Image "$OUTDIR"           # ssolusa; added b/c errors; no Image; removed sudo
+echo "Adding the Image in $OUTDIR"                                      # ssolusa; change FROM outdir, TO $OUTDIR
+cp ${OUTDIR}/linux-stable/arch/arm64/boot/Image "$OUTDIR"               # ssolusa; added b/c errors; no Image
 
 
 echo "Creating the staging directory for the root filesystem"
 cd "$OUTDIR"
-# **************************************************************************************
-# ssolusa START
-# Adding b/c permission errors
-# owner=$(stat -c '%U' "$OUTDIR")
-# if [ "$owner" = "root" ]; then
-#     echo "Changing ownership of $OUTDIR to root..."
-#     sudo chown -R $USER:$USER "$OUTDIR"
-# fi
-# **************************************************************************************
 if [ -d "${OUTDIR}/rootfs" ]
 then
     echo "Deleting rootfs directory at ${OUTDIR}/rootfs and starting over"
@@ -173,10 +159,9 @@ sudo mknod -m 666 dev/null c 1 3
 # ********************************************************************************************
 # ssolusa START
 # FROM: finder-test.sh
-# cd $HOME/Documents/msGithubRepo/finder-app/
 cd "$FINDERAPP"
 make clean
-make
+make CROSS_COMPILE=${CROSS_COMPILE}
 cp writer "$OUTDIR/rootfs/home/"                                                                 # Per HW instruction 1.e.ii
 # ********************************************************************************************
 
@@ -185,7 +170,6 @@ cp writer "$OUTDIR/rootfs/home/"                                                
 # TODO: Copy the finder related scripts and executables to the /home directory on the target rootfs
 # ********************************************************************************************
 # ssolusa START
-# cd $HOME/Documents/msGithubRepo/finder-app/
 cd "$FINDERAPP"
 cp -a finder.sh finder-test.sh "$OUTDIR/rootfs/home/"
 cp -a conf/username.txt conf/assignment.txt "$OUTDIR/rootfs/home/conf/"
@@ -200,7 +184,6 @@ cp -a writer.sh "$OUTDIR/rootfs/home/"                                          
 # ssolusa START
 cd "$OUTDIR"
 sudo chown -R root:root "$OUTDIR/rootfs"
-# sudo chown -R $USER:$USER "$OUTDIR"                                                              # Was root:root but errors with permissions
 # ********************************************************************************************
 
 
@@ -212,7 +195,6 @@ cd "$OUTDIR/rootfs"
 find . | cpio -H newc -ov --owner root:root > "$OUTDIR/initramfs.cpio"
 cd "$OUTDIR"
 gzip -f initramfs.cpio
-# sudo chown -R root:root "$OUTDIR"
 # ********************************************************************************************
 
 
